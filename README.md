@@ -1,5 +1,7 @@
 ### Using the Generic Interface REST of the ((OTRS)) Community Edition with PHP
-### Updated for Znuny 6.4
+[/] Updated for Znuny 6.4
+[/] Using Guzzle instead of old HTTP library(Unirest-PHP)
+[/] Updated to work with PHP 8.x
 
 #### Requirements
 - [Znuny](https://github.com/znuny/Znuny) version 6.4
