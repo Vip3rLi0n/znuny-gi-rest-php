@@ -34,5 +34,4 @@ The default operations TicketCreate and TicketUpdate are not able to send a new 
 
 
 ### Credit
-Credit to him that I was able to update the script.
-Click to see his Github: [Click Here](https://github.com/rkaldung/otrs-gi-rest-php)
+rkaldung: [Click Here](https://github.com/rkaldung/otrs-gi-rest-php)
