@@ -16,7 +16,7 @@ First, download the web service configuration from [GitHub](https://raw.githubus
 Clone this repository and run `composer update` to add the [Guzzle](https://github.com/guzzle/guzzle) library:
 
 ```bash
-$ git clone https://github.com/rkaldung/otrs-gi-rest-php.git php-rest-client
+$ git clone https://github.com/Ni3zam/znuny-gi-rest-php.git php-rest-client
 $ cd php-rest-client
 $ composer update
 ```
