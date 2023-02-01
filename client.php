@@ -50,7 +50,6 @@ if (!$responseData->SessionID) {
 $SessionID = $responseData->SessionID;
 print "Your SessionID is $SessionID\n";
 
-
 /**
  * TicketCreate
  *
@@ -95,18 +94,17 @@ $response = $client->request('POST', $BaseURL."/Ticket", [
     'body' => $body,
 ]);
 
-$responseData = json_decode($response->getBody());
+$responseData = json_decode($response->getBody(), true);
 
-if ( $responseData->Error ) {
-    $ErrorCode = $responseData->Error->ErrorCode;
-    $ErrorMessage = $responseData->Error->ErrorMessage;
+if (array_key_exists('Error', $responseData)) {
+    $ErrorCode = $responseData['Error']['ErrorCode'];
+    $ErrorMessage = $responseData['Error']['ErrorMessage'];
     print "ErrorCode $ErrorCode\n";
     print "ErrorMessage $ErrorMessage\n";
     exit(1);
 }
 
-$TicketNumber = $responseData->TicketNumber;
-$TicketID = $response->body->TicketID;
-foreach($TicketIDs as $TicketID) {
-    print "https://$FQDN/otrs/index.pl?Action=AgentTicketZoom;TicketID=$TicketID \n";
-} 
+$TicketNumber = $responseData['TicketNumber'];
+$TicketID = $responseData['TicketID'];
+
+print "https://$FQDN/otrs/index.pl?Action=AgentTicketZoom;TicketID=$TicketID \n";
