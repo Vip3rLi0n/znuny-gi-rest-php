@@ -26,10 +26,10 @@ $ composer update
 
 ## Prepare the client
 **Edit client.php and complete the baseURL and configure those listed below.**
-- [FQDN](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L14).
-- [WebServiceName](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L15).
-- [UserLogin](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L23).
-- [Password](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L24).
+- [FQDN](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L11).
+- [WebServiceName](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L12).
+- [UserLogin](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L17).
+- [Password](https://github.com/Ni3zam/znuny-gi-rest-php/blob/main/client.php#L18).
 
 ## Run your client
 Your client is ready to go and can be executed by `php client.php`
