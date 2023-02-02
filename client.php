@@ -8,14 +8,14 @@ Request::defaultHeader("Accept", "application/json");
 Request::defaultHeader("Content-Type", "application/json");
 Request::verifyPeer(true);
 
-$FQDN = 'otrs.nizzy.xyz';
+$FQDN = 'FIXME';
 $WebServiceName = 'GenericTicketConnectorREST';
 $BaseURL = "https://$FQDN/otrs/nph-genericinterface.pl/Webservice/$WebServiceName";
 $headers = [];
 $body = json_encode(
     [
-        "UserLogin" => "wc",
-        "Password"  => "wc",
+        "UserLogin" => "FIXME",
+        "Password"  => "FIXME",
     ]
 );
 
