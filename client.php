@@ -76,26 +76,69 @@ if ( $response->body->Error ) {
     print "ErrorMessage $ErrorMessage\n";
 }
 
-$param = [
-'SessionID' => $SessionID,
-];
-$response = Unirest\Request::get($BaseURL."/Ticket/${TicketID}", $headers, null, $param);
-if ( $response->body->Error ) {
-$ErrorCode = $response->body->Error->ErrorCode;
-$ErrorMessage = $response->body->Error->ErrorMessage;
-print "ErrorCode $ErrorCode\n";
-print "ErrorMessage $ErrorMessage\n";
-exit(1);
-}
-$ticket = $response->body->Ticket;
+$TicketNumber = $response->body->TicketNumber;
+$TicketID = $response->body->TicketID;
+$ArticleID = $response->body->ArticleID;
 
-print "\nRetrieved Ticket\n";
-print "Queue: ".$ticket->Queue."\n";
-print "State: ".$ticket->State."\n";
+print "\nThe ticket $TicketNumber was created. Check it via https://$FQDN/otrs/index.pl?Action=AgentTicketZoom;TicketID=$TicketID\n\n";
 
 /**
 *
-* SessionDestroy
+* TicketUpdate (Moving ticket to another queue, and also state of the ticket)
+*
+**/
+$param = json_encode([
+        'SessionID' => $SessionID,
+        'Ticket' => [
+                'Queue' => 'Warehouse',
+                'State' => 'new'
+        ]
+]);
+$response = Unirest\Request::patch($BaseURL."/Ticket/${TicketID}", $headers, null, $param);
+if ( $response->body->Error ) {
+    $ErrorCode = $response->body->Error->ErrorCode;
+    $ErrorMessage = $response->body->Error->ErrorMessage;
+    print "\n\n";
+    print "ErrorCode $ErrorCode\n\n";
+    print "\n\n";
+    print "ErrorMessage $ErrorMessage\n\n";
+    print "\n\n";
+    exit(1);
+}
+
+print "\nThe ticket was moved to the queue 'Warehouse' and the state changed to 'new'\n";
+
+/**
+ * TicketGet
+ *
+ * http://doc.otrs.com/doc/api/otrs/6.0/Perl/Kernel/GenericInterface/Operation/Ticket/TicketGet.pm.html
+ */
+
+/* NOTE: Fix this Later to Request ticket information */
+$param = [
+    'SessionID' => $SessionID,
+];
+$response = Unirest\Request::get($BaseURL."/Ticket/${TicketID}?Extended=1", $headers, $param);
+if ( $response->body->Error ) {
+        $ErrorCode = $response->body->Error->ErrorCode;
+        $ErrorMessage = $response->body->Error->ErrorMessage;
+        print "ErrorCode $ErrorCode\n\n";
+        print "\n\n";
+        print "ErrorMessage $ErrorMessage\n\n";
+        print "\n\n";
+        exit(1);
+}
+$ticket = $response->body->Ticket[0];
+print "\nThe ticket data:\n";
+foreach($TicketData as $key => $value) {
+    if ($value) {
+        print "$key: $value\n";
+    }
+}
+
+**
+*
+* SessionDestroy (Used to log out from Webservice account.)
 *
 */
 $param = [
@@ -103,12 +146,14 @@ $param = [
 ];
 $response = Unirest\Request::delete($BaseURL."/Session", $headers, $param);
 if ( $response->body->Error ) {
-$ErrorCode = $response->body->Error->ErrorCode;
-$ErrorMessage = $response->body->Error->ErrorMessage;
-print "ErrorCode $ErrorCode\n";
-print "ErrorMessage $ErrorMessage\n";
-exit(1);
+    $ErrorCode = $response->body->Error->ErrorCode;
+    $ErrorMessage = $response->body->Error->ErrorMessage;
+    print "\n\n";
+    print "ErrorCode $ErrorCode\n\n";
+    print "ErrorMessage $ErrorMessage\n\n";
+    print "\n\n";
+    exit(1);
 }
-print "\nSessionID $SessionID was destroyed\n";
+print "\nSessionID $SessionID has been terminated.\n\n";
 
 ?>
