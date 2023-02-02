@@ -128,7 +128,7 @@ if ( $response->body->Error ) {
         print "\n\n";
         exit(1);
 }
-$ticket = $response->body->Ticket[0];
+$ticketData = $response->body->Ticket[0];
 print "\nThe ticket data:\n";
 foreach($TicketData as $key => $value) {
     if ($value) {
