@@ -1,27 +1,21 @@
-#!/usr/bin/env php
 <?php
-
+declare(strict_types=1);
 require_once 'vendor/autoload.php';
-use Http\Client\Common\HttpMethodsClient;
-use Http\Discovery\HttpClientDiscovery;
-use Http\Message\MessageFactory\GuzzleMessageFactory;
 
-$httpClient = new HttpMethodsClient(
-    HttpClientDiscovery::find(),
-    new GuzzleMessageFactory()
-);
+use Unirest\Request;
 
-$FQDN = 'FIXME';
+Request::defaultHeader("Accept", "application/json");
+Request::defaultHeader("Content-Type", "application/json");
+Request::verifyPeer(true);
+
+$FQDN = 'otrs.nizzy.xyz';
 $WebServiceName = 'GenericTicketConnectorREST';
 $BaseURL = "https://$FQDN/otrs/nph-genericinterface.pl/Webservice/$WebServiceName";
-$headers = [
-    'Accept' => 'application/json',
-    'Content-Type' => 'application/json'
-];
+$headers = [];
 $body = json_encode(
     [
-        "UserLogin" => "FIXME",
-        "Password"  => "FIXME",
+        "UserLogin" => "wc",
+        "Password"  => "wc",
     ]
 );
 
@@ -30,25 +24,14 @@ $body = json_encode(
  *
  * http://doc.otrs.com/doc/api/otrs/6.0/Perl/Kernel/GenericInterface/Operation/Session/SessionCreate.pm.html
  */
-$client = new \GuzzleHttp\Client();
-$response = $client->request('POST', $BaseURL."/Session", [
-    'headers' => [
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
-    ],
-    'verify' => true,
-    'body' => $body,
-]);
-
-$responseData = json_decode($response->getBody());
-
-if (!$responseData->SessionID) {
+$response = Request::post($BaseURL."/Session", $headers, $body);
+if (!$response->body->SessionID) {
     print "No SessionID returned \n";
     exit(1);
 }
-
-$SessionID = $responseData->SessionID;
+$SessionID = $response->body->SessionID;
 print "Your SessionID is $SessionID\n";
+
 
 /**
  * TicketCreate
@@ -67,7 +50,7 @@ $body = json_encode([
             'OwnerID' => 1,
         ],
         'Article' =>[
-            'CommunicationChannel' => 'Email',  
+            'CommunicationChannel' => 'Email',
             'ArticleTypeID' => 1,
             'SenderTypeID' => 1,
             'Subject' => 'Example',
@@ -85,26 +68,47 @@ $body = json_encode([
     ]
 );
 
-$response = $client->request('POST', $BaseURL."/Ticket", [
-    'headers' => [
-        'Accept' => 'application/json',
-        'Content-Type' => 'application/json',
-    ],
-    'verify' => true,
-    'body' => $body,
-]);
-
-$responseData = json_decode($response->getBody(), true);
-
-if (array_key_exists('Error', $responseData)) {
-    $ErrorCode = $responseData['Error']['ErrorCode'];
-    $ErrorMessage = $responseData['Error']['ErrorMessage'];
+$response = Request::post($BaseURL."/Ticket", $headers, $body);
+if ( $response->body->Error ) {
+    $ErrorCode = $response->body->Error->ErrorCode;
+    $ErrorMessage = $response->body->Error->ErrorMessage;
     print "ErrorCode $ErrorCode\n";
     print "ErrorMessage $ErrorMessage\n";
-    exit(1);
 }
 
-$TicketNumber = $responseData['TicketNumber'];
-$TicketID = $responseData['TicketID'];
+$param = [
+'SessionID' => $SessionID,
+];
+$response = Unirest\Request::get($BaseURL."/Ticket/${TicketID}", $headers, null, $param);
+if ( $response->body->Error ) {
+$ErrorCode = $response->body->Error->ErrorCode;
+$ErrorMessage = $response->body->Error->ErrorMessage;
+print "ErrorCode $ErrorCode\n";
+print "ErrorMessage $ErrorMessage\n";
+exit(1);
+}
+$ticket = $response->body->Ticket;
 
-print "https://$FQDN/otrs/index.pl?Action=AgentTicketZoom;TicketID=$TicketID \n";
+print "\nRetrieved Ticket\n";
+print "Queue: ".$ticket->Queue."\n";
+print "State: ".$ticket->State."\n";
+
+/**
+*
+* SessionDestroy
+*
+*/
+$param = [
+'SessionID' => $SessionID,
+];
+$response = Unirest\Request::delete($BaseURL."/Session", $headers, $param);
+if ( $response->body->Error ) {
+$ErrorCode = $response->body->Error->ErrorCode;
+$ErrorMessage = $response->body->Error->ErrorMessage;
+print "ErrorCode $ErrorCode\n";
+print "ErrorMessage $ErrorMessage\n";
+exit(1);
+}
+print "\nSessionID $SessionID was destroyed\n";
+
+?>
