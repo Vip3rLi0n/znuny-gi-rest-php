@@ -1,7 +1,5 @@
 {
     "require": {
-        "guzzlehttp/guzzle": "^7.0",
-        "php-http/guzzle6-adapter": "^2.0",
-        "php-http/httplug": "^2.0"
+        "mashape/unirest-php": "^3.0"
     }
 }
