@@ -2,7 +2,7 @@
 
 Update:
 - ✅ Updated for Znuny 6.4
-- ✅ Using Guzzle instead of old HTTP library(Unirest-PHP)
+- ✅ Updated to use latest Unirest-PHP library
 - ✅ Updated to work with PHP 8.x
 
 ### Requirements
