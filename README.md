@@ -1,4 +1,4 @@
-### Using the Generic Interface REST of the ((OTRS)) Community Edition with PHP
+### Using the Generic Interface REST of the Znuny/OTRS with PHP
 
 Update:
 - ✅ Updated for Znuny 6.4
